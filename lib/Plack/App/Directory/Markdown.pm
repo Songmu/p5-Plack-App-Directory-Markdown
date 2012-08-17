@@ -35,7 +35,7 @@ sub serve_path {
     my($self, $env, $dir) = @_;
 
     if (-f $dir) {
-        if ($dir =~ /\.(?:markdown|mk?dn?)$/) {
+        if (is_markdown($dir)) {
             my $content = do {local $/;open my $fh,'<:utf8',$dir or die $!;<$fh>};
             $content = markdown($content);
             my $page = $self->tx->render('md.tx', {content => $content});
@@ -73,6 +73,8 @@ sub serve_path {
         my $url = $dir_url . $basename;
 
         my $is_dir = -d $file;
+        next if !$is_dir && !is_markdown($file);
+
         my @stat = stat _;
 
         $url = join '/', map {uri_escape($_)} split m{/}, $url;
@@ -88,6 +90,10 @@ sub serve_path {
     my $page  = $self->tx->render('index.tx', {files => \@files, path => $path});
     $page = encode_utf8($page);
     return [ 200, ['Content-Type' => 'text/html; charset=utf-8'], [ $page ] ];
+}
+
+sub is_markdown {
+    shift =~ /\.(?:markdown|mk?dn?)$/;
 }
 
 1;

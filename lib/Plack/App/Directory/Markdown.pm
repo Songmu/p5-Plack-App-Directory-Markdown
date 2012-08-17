@@ -191,11 +191,41 @@ __DATA__
 @@ base.tx
 <!DOCTYPE html>
 <html>
-<head><title>MarkdownUp</title></head>
-<style type="text/css">
-</style>
+<head>
+<meta charset="utf-8">
+<title>MarkdownUp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/_static/css/prettify.css" />
+</head>
 <body>
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand" href="#">Makdown viewer</a>
+      <div class="nav-collapse">
+        <ul class="nav">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+</div>
+
+<div class="container">
 <: block body -> { :>default body<: } :>
+</div>
+<script type="text/javascript" src="/_static/js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="/_static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/_static/js/prettify.js"></script>
+<script type="text/javascript" src="/_static/js/init.js"></script>
 </body>
 </html>
 

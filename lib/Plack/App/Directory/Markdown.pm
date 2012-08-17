@@ -85,7 +85,7 @@ sub serve_path {
     }
 
     my $path  = Plack::Util::encode_html("Index of $env->{PATH_INFO}");
-    my $page  = $self->tx->render('index.tx', {files => \@files});
+    my $page  = $self->tx->render('index.tx', {files => \@files, path => $path});
     $page = encode_utf8($page);
     return [ 200, ['Content-Type' => 'text/html; charset=utf-8'], [ $page ] ];
 }
@@ -108,9 +108,14 @@ __DATA__
 @@ index.tx
 : cascade base;
 : override body -> {
+<h1><: $path :></h1>
 <ul>
 :   for $files -> $file {
-<li><a href="<: $file.link :>"><: $file.name :></a> (<: $file.mtime :>)</li>
+<li><a href="<: $file.link :>"><: $file.name :></a>
+:     if $file.mtime {
+(<: $file.mtime :>)
+:     }
+</li>
 :   }
 </ul>
 : } # endblock body

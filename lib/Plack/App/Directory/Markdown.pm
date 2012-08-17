@@ -96,7 +96,6 @@ sub serve_path {
     if ($dir =~ m!/_static/!) {
         my $static_file = $dir;
 
-        warn $self->root;
         my $root = $self->root || '';
         $root =~ s!^\./!!;
         $root =~ s!/$!!;

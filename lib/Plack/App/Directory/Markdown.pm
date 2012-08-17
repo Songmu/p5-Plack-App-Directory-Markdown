@@ -60,9 +60,9 @@ sub serve_path {
 
             my @stat = stat $dir;
             return [ 200, [
-                'Content-Type'  => 'text/html; charset=utf-8',
+                'Content-Type'   => 'text/html; charset=utf-8',
                 'Content-Length' => length($page),
-                'Last-Modified' => HTTP::Date::time2str( $stat[9] ),
+                'Last-Modified'  => HTTP::Date::time2str( $stat[9] ),
             ], [ $page ] ];
         }
         else {

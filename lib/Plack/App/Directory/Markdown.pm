@@ -49,7 +49,7 @@ sub serve_path {
             ], [ $page ] ];
         }
         else {
-            return Plack::App::File::serve_path($self, $env, $dir);
+            return $self->SUPER::serve_path($env, $dir);
         }
     }
 

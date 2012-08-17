@@ -5,6 +5,8 @@ use utf8;
 our $VERSION = '0.01';
 
 use parent 'Plack::App::Directory';
+use Plack::Util::Accessor;
+Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx_path tx));
 
 use Encode qw/encode_utf8/;
 use Data::Section::Simple qw/get_data_section/;
@@ -13,11 +15,21 @@ use Text::Markdown::Discount qw/markdown/;
 use HTTP::Date;
 use URI::Escape;
 
-my $tx = Text::Xslate->new(
-    path => [
-        Data::Section::Simple->new->get_data_section,
-    ],
-);
+
+sub new {
+    my $cls = shift;
+
+    my $self = $cls->SUPER::new(@_);
+    $self->tx(
+        Text::Xslate->new(
+            path => [
+                ($self->tx_path || ()),
+                Data::Section::Simple->new->get_data_section,
+            ],
+        )
+    );
+    $self;
+}
 
 sub serve_path {
     my($self, $env, $dir) = @_;
@@ -26,7 +38,7 @@ sub serve_path {
         if ($dir =~ /\.(?:markdown|mk?dn?)$/) {
             my $content = do {local $/;open my $fh,'<:utf8',$dir or die $!;<$fh>};
             $content = markdown($content);
-            my $page = $tx->render('md.tx', {content => $content});
+            my $page = $self->tx->render('md.tx', {content => $content});
             $page = encode_utf8($page);
 
             my @stat = stat $dir;
@@ -73,7 +85,7 @@ sub serve_path {
     }
 
     my $path  = Plack::Util::encode_html("Index of $env->{PATH_INFO}");
-    my $page  = $tx->render('index.tx', {files => \@files});
+    my $page  = $self->tx->render('index.tx', {files => \@files});
     $page = encode_utf8($page);
     return [ 200, ['Content-Type' => 'text/html; charset=utf-8'], [ $page ] ];
 }

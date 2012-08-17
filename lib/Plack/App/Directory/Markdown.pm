@@ -5,16 +5,14 @@ use utf8;
 our $VERSION = '0.01';
 
 use parent 'Plack::App::Directory';
-use Plack::Util::Accessor;
-Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx_path tx));
-
 use Encode qw/encode_utf8/;
 use Data::Section::Simple qw/get_data_section/;
 use Text::Xslate;
-use Text::Markdown::Discount qw/markdown/;
 use HTTP::Date;
 use URI::Escape;
 
+use Plack::Util::Accessor;
+Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx_path tx markdown_class));
 
 sub new {
     my $cls = shift;
@@ -31,13 +29,23 @@ sub new {
     $self;
 }
 
+sub markdown {
+    my $self = shift;
+    my $cls = $self->markdown_class || 'Text::Markdown';
+
+    eval "use $cls qw/markdown/;";
+    die $@ if $@;
+
+    markdown(@_);
+}
+
 sub serve_path {
     my($self, $env, $dir) = @_;
 
     if (-f $dir) {
         if (is_markdown($dir)) {
             my $content = do {local $/;open my $fh,'<:utf8',$dir or die $!;<$fh>};
-            $content = markdown($content);
+            $content = $self->markdown($content);
             my $page = $self->tx->render('md.tx', {content => $content});
             $page = encode_utf8($page);
 
@@ -59,7 +67,8 @@ sub serve_path {
         return $self->return_dir_redirect($env);
     }
 
-    my @files = ({ link => "../", name => "Parent Directory" });
+    my @files;
+    push @files, ({ link => "../", name => "Parent Directory" }) if $env->{PATH_INFO} ne '/';
 
     my $dh = DirHandle->new($dir);
     my @children;

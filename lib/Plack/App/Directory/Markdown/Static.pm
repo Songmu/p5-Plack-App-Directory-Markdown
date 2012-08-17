@@ -1,7 +1,6 @@
 package Plack::App::Directory::Markdown::Static;
 use strict;
 use warnings;
-use utf8;
 
 use MIME::Base64;
 use Data::Section::Simple qw/get_data_section/;
@@ -24,6 +23,7 @@ sub is_binary {
     $ext && grep {$ext eq $_} qw/jpg png gif swf ico/;
 }
 
+1;
 __DATA__
 
 

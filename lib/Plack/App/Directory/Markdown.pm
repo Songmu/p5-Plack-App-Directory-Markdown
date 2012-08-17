@@ -5,6 +5,8 @@ use utf8;
 our $VERSION = '0.01';
 
 use parent 'Plack::App::Directory';
+use Plack::App::Directory::Markdown::Static;
+use Plack::MIME;
 use Encode qw/encode_utf8/;
 use Data::Section::Simple;
 use Text::Xslate;
@@ -39,8 +41,78 @@ sub markdown {
     markdown(@_);
 }
 
+sub should_handle {
+    my($self, $file) = @_;
+    return -d $file || -f $file || $file =~ m!/_static/!;
+}
+
+sub locate_file {
+    my($self, $env) = @_;
+
+    my $path = $env->{PATH_INFO} || '';
+
+    if ($path =~ /\0/) {
+        return $self->return_400;
+    }
+
+    my $docroot = $self->root || ".";
+    my @path = split '/', $path;
+    if (@path) {
+        shift @path if $path[0] eq '';
+    } else {
+        @path = ('.');
+    }
+
+    if (grep $_ eq '..', @path) {
+        return $self->return_403;
+    }
+
+    my($file, @path_info);
+    while (@path) {
+        my $try = File::Spec::Unix->catfile($docroot, @path);
+        if ($self->should_handle($try)) {
+            $file = $try;
+            last;
+        } elsif (!$self->allow_path_info) {
+            last;
+        }
+        unshift @path_info, pop @path;
+    }
+
+    if (!$file) {
+        return $self->return_404;
+    }
+
+    if (!-r $file && $file !~ m!/_static/! ) {
+        return $self->return_403;
+    }
+
+    return $file, join("/", "", @path_info);
+}
+
 sub serve_path {
     my($self, $env, $dir) = @_;
+
+    if ($dir =~ m!/_static/!) {
+        my $static_file = $dir;
+
+        warn $self->root;
+        my $root = $self->root || '';
+        $root =~ s!^\./!!;
+        $root =~ s!/$!!;
+        $root = quotemeta $root;
+
+        $static_file =~ s!$root/_static/!!;
+        my $data = Plack::App::Directory::Markdown::Static::get_data($static_file);
+
+        return [404, ['Content-Type' => 'text/plain'], ['NOT FOUND']] unless $data;
+
+        my $mime_type = Plack::MIME->mime_type($static_file);
+        return [ 200, [
+            'Content-Type'   => $mime_type,
+            'Content-Length' => length($data),
+        ], [ $data ] ];
+    }
 
     if (-f $dir) {
         if ($self->is_markdown($dir)) {

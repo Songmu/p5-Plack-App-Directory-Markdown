@@ -12,7 +12,7 @@ use HTTP::Date;
 use URI::Escape qw/uri_escape/;
 
 use Plack::Util::Accessor;
-Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx_path tx markdown_class));
+Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx tx_path markdown_class markdown_ext));
 
 sub new {
     my $cls = shift;
@@ -43,7 +43,7 @@ sub serve_path {
     my($self, $env, $dir) = @_;
 
     if (-f $dir) {
-        if (is_markdown($dir)) {
+        if ($self->is_markdown($dir)) {
             my $content = do {local $/;open my $fh,'<:utf8',$dir or die $!;<$fh>};
             $content = $self->markdown($content);
             my $page = $self->tx->render('md.tx', {content => $content});
@@ -82,7 +82,7 @@ sub serve_path {
         my $url = $dir_url . $basename;
 
         my $is_dir = -d $file;
-        next if !$is_dir && !is_markdown($file);
+        next if !$is_dir && !$self->is_markdown($file);
 
         my @stat = stat _;
 
@@ -102,7 +102,14 @@ sub serve_path {
 }
 
 sub is_markdown {
-    shift =~ /\.(?:markdown|mk?dn?)$/;
+    my ($self, $file) = @_;
+    if ($self->markdown_ext) {
+        my $ext = quotemeta $self->markdown_ext;
+        $file =~ /$ext$/;
+    }
+    else {
+        $file =~ /\.(?:markdown|mk?dn?)$/;
+    }
 }
 
 1;

@@ -6,10 +6,10 @@ our $VERSION = '0.01';
 
 use parent 'Plack::App::Directory';
 use Encode qw/encode_utf8/;
-use Data::Section::Simple qw/get_data_section/;
+use Data::Section::Simple;
 use Text::Xslate;
 use HTTP::Date;
-use URI::Escape;
+use URI::Escape qw/uri_escape/;
 
 use Plack::Util::Accessor;
 Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx_path tx markdown_class));

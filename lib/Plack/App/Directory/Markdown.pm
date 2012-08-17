@@ -195,6 +195,11 @@ __DATA__
 <title>MarkdownUp</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap.min.css" />
+<style type="text/css">
+  body {
+    padding-top: 60px;
+  }
+</style>
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap-responsive.min.css" />
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/prettify.css" />
 </head>
@@ -207,11 +212,10 @@ __DATA__
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-      <a class="brand" href="#">Makdown viewer</a>
+      <a class="brand" href="/">Makdown</a>
       <div class="nav-collapse">
         <ul class="nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
+          <li class="active"><a href="/">Home</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

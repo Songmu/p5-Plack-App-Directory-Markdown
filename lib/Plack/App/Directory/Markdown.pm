@@ -35,7 +35,7 @@ sub markdown {
     my $self = shift;
     my $cls = $self->markdown_class || 'Text::Markdown';
 
-    eval "use $cls qw/markdown/;";
+    eval "use $cls qw/markdown/;"; ## no critic
     die $@ if $@;
 
     markdown(@_);
@@ -109,7 +109,7 @@ sub serve_path {
 
     if (-f $dir) {
         if ($self->is_markdown($dir)) {
-            my $content = do {local $/;open my $fh,'<:utf8',$dir or die $!;<$fh>};
+            my $content = do {local $/;open my $fh,'<:encoding(UTF-8)',$dir or die $!;<$fh>};
             $content = $self->markdown($content);
 
             my $path = $self->remove_root_path($dir);

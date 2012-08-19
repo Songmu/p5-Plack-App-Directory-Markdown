@@ -279,15 +279,49 @@ __END__
 
 =head1 NAME
 
-Plack::App::Directory::Markdown -
+Plack::App::Directory::Markdown - Serve translated HTML from markdown files from document root with directory index
 
 =head1 SYNOPSIS
 
+  # app.psgi
   use Plack::App::Directory::Markdown;
+  my $app = Plack::App::Dirctory->new->to_app;
+
+  # app.psgi
+  my $app = Plack::App::Dirctory->new({
+    root           => '/path/to/markdown_files',
+    title          => 'page title',
+    tx_path        => '/path/to/xslate_templates',
+    markdown_class => 'Text::Markdown',
+  })->to_app;
 
 =head1 DESCRIPTION
 
-Plack::App::Directory::Markdown is
+This is a PSGI application for documentation with markdown.
+
+=head1 CONFIGURATION
+
+=over 4
+
+=item root
+
+Document root directory. Defaults to the current directory.
+
+=item title
+
+Page title. Defaults to 'Markdown'.
+
+=item tx_path
+
+Text::Xslate's template directory. You can override default template with 'index.tx' and 'md.tx'.
+
+=item markdown_class
+
+Specify Markdown module. 'Text::Markdown' as default.
+The module should have 'markdown' sub routine exportable.
+
+=back
+
 
 =head1 AUTHOR
 

@@ -14,7 +14,7 @@ use HTTP::Date;
 use URI::Escape qw/uri_escape/;
 
 use Plack::Util::Accessor;
-Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(tx tx_path markdown_class markdown_ext));
+Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(title tx tx_path markdown_class markdown_ext));
 
 sub new {
     my $cls = shift;
@@ -43,7 +43,7 @@ sub markdown {
 
 sub should_handle {
     my($self, $file) = @_;
-    return -d $file || -f $file || $file =~ m!/_static/!;
+    return -d $file || -f $file || $file =~ m!(?:^|/)_static/!;
 }
 
 sub locate_file {
@@ -83,7 +83,7 @@ sub locate_file {
         return $self->return_404;
     }
 
-    if (!-r $file && $file !~ m!/_static/! ) {
+    if (!-r $file && $file !~ m!(?:^|/)_static/! ) {
         return $self->return_403;
     }
 
@@ -93,15 +93,9 @@ sub locate_file {
 sub serve_path {
     my($self, $env, $dir) = @_;
 
-    if ($dir =~ m!/_static/!) {
-        my $static_file = $dir;
-
-        my $root = $self->root || '';
-        $root =~ s!^\./!!;
-        $root =~ s!/$!!;
-        $root = quotemeta $root;
-
-        $static_file =~ s!$root/_static/!!;
+    if ($dir =~ m!(?:^|/)_static/!) {
+        my $static_file = $self->remove_root_path($dir);
+        $static_file =~ s!^_static/!!;
         my $data = Plack::App::Directory::Markdown::Static::get_data($static_file);
 
         return [404, ['Content-Type' => 'text/plain'], ['NOT FOUND']] unless $data;
@@ -117,7 +111,14 @@ sub serve_path {
         if ($self->is_markdown($dir)) {
             my $content = do {local $/;open my $fh,'<:utf8',$dir or die $!;<$fh>};
             $content = $self->markdown($content);
-            my $page = $self->tx->render('md.tx', {content => $content});
+
+            my $path = $self->remove_root_path($dir);
+
+            my $page = $self->tx->render('md.tx', {
+                path    => $path,
+                title   => ($self->title || 'Markdown'),
+                content => $content,
+            });
             $page = encode_utf8($page);
 
             my @stat = stat $dir;
@@ -167,7 +168,11 @@ sub serve_path {
     }
 
     my $path  = Plack::Util::encode_html("Index of $env->{PATH_INFO}");
-    my $page  = $self->tx->render('index.tx', {files => \@files, path => $path});
+    my $page  = $self->tx->render('index.tx', {
+        title   => ($self->title || 'Markdown'),
+        files => \@files,
+        path => $path
+    });
     $page = encode_utf8($page);
     return [ 200, ['Content-Type' => 'text/html; charset=utf-8'], [ $page ] ];
 }
@@ -181,6 +186,19 @@ sub is_markdown {
     else {
         $file =~ /\.(?:markdown|mk?dn?)$/;
     }
+}
+
+sub remove_root_path {
+    my ($self, $path) = @_;
+
+    $path =~ s!^\./?!!;
+    my $root = $self->root || '';
+    $root =~ s!^\./?!!;
+    $root .= '/' if $root && $root !~ m!/$!;
+    $root = quotemeta $root;
+    $path =~ s!^$root!!;
+
+    $path;
 }
 
 1;
@@ -202,6 +220,12 @@ __DATA__
 </style>
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap-responsive.min.css" />
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/prettify.css" />
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
@@ -238,11 +262,7 @@ __DATA__
 <h1><: $path :></h1>
 <ul>
 :   for $files -> $file {
-<li><a href="<: $file.link :>"><: $file.name :></a>
-:     if $file.mtime {
-(<: $file.mtime :>)
-:     }
-</li>
+<li><a href="<: $file.link :>"><: $file.name :></a></li>
 :   }
 </ul>
 : } # endblock body
@@ -250,6 +270,7 @@ __DATA__
 @@ md.tx
 : cascade base;
 : override body -> {
+<h1><: $path :></h1>
 : $content | mark_raw
 : } # endblock body
 

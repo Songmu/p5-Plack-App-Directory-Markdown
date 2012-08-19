@@ -471,6 +471,7 @@ $(function(){
         $('pre > code').addClass('prettyprint');
         prettyPrint();
     }
+    $('table').addClass('table');
 });
 
 

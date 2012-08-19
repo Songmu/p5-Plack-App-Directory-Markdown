@@ -113,6 +113,7 @@ sub serve_path {
             $content = $self->markdown($content);
 
             my $path = $self->remove_root_path($dir);
+            $path =~ s/\.(?:markdown|mk?dn?)$//;
 
             my $page = $self->tx->render('md.tx', {
                 path    => $path,

@@ -221,6 +221,7 @@ __DATA__
 </style>
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap-responsive.min.css" />
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/prettify.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/style.css" />
 
 <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>

@@ -10,3 +10,5 @@ nytprof.out
 MANIFEST.bak
 *.sw[po]
 tmp/
+MYMETA.yml
+MYMETA.json

@@ -97,7 +97,7 @@ sub serve_path {
         $static_file =~ s!^_static/!!;
         my ($data, $mime_type) = Plack::App::Directory::Markdown::Static::get_data($static_file);
 
-        return [404, ['Content-Type' => 'text/plain'], ['NOT FOUND']] unless $data;
+        return $self->return_404 unless $data;
 
         return [ 200, [
             'Content-Type'   => $mime_type,

@@ -6,7 +6,6 @@ our $VERSION = '0.01';
 
 use parent 'Plack::App::Directory';
 use Plack::App::Directory::Markdown::Static;
-use Plack::MIME;
 use Encode qw/encode_utf8/;
 use Data::Section::Simple;
 use Text::Xslate;
@@ -96,11 +95,10 @@ sub serve_path {
     if ($dir =~ m!(?:^|/)_static/!) {
         my $static_file = $self->remove_root_path($dir);
         $static_file =~ s!^_static/!!;
-        my $data = Plack::App::Directory::Markdown::Static::get_data($static_file);
+        my ($data, $mime_type) = Plack::App::Directory::Markdown::Static::get_data($static_file);
 
         return [404, ['Content-Type' => 'text/plain'], ['NOT FOUND']] unless $data;
 
-        my $mime_type = Plack::MIME->mime_type($static_file);
         return [ 200, [
             'Content-Type'   => $mime_type,
             'Content-Length' => length($data),

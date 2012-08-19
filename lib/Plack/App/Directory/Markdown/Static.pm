@@ -4,23 +4,27 @@ use warnings;
 
 use MIME::Base64;
 use Data::Section::Simple qw/get_data_section/;
+use Plack::MIME;
 
 sub get_data {
     my $file = shift;
 
     my $content = get_data_section($file);
-    if (is_binary($file)) {
+    my $mime_type = Plack::MIME->mime_type($file);
+
+    if (is_binary($mime_type)) {
         $content = decode_base64($content);
     }
-    $content;
+    else {
+        $mime_type .= ' charset=UTF-8;';
+    }
+    ($content, $mime_type);
 }
 
 sub is_binary {
-    my $file = shift;
-    my ($ext) = $file =~ /\.([^.]+)$/;
-    $ext = lc $ext;
+    my $mime_type = shift;
 
-    $ext && grep {$ext eq $_} qw/jpg png gif swf ico/;
+    $mime_type !~ /\b(?:text|xml)\b/;
 }
 
 1;

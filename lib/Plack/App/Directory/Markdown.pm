@@ -32,12 +32,15 @@ sub new {
 
 sub markdown {
     my $self = shift;
-    my $cls = $self->markdown_class || 'Text::Markdown';
 
-    eval "use $cls qw/markdown/;"; ## no critic
-    die $@ if $@;
+    my $md = $self->{_md} ||= do {
+        my $cls = $self->markdown_class || 'Text::Markdown';
+        Plack::Util::load_class($cls);
 
-    markdown(@_);
+        $cls->new;
+    };
+
+    $md->markdown(@_);
 }
 
 sub should_handle {

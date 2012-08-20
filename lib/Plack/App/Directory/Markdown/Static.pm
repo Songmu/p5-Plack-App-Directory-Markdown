@@ -24,7 +24,7 @@ sub get_data {
 sub is_binary {
     my $mime_type = shift;
 
-    $mime_type !~ /\b(?:text|xml)\b/;
+    $mime_type !~ /\b(?:text|xml|javascript|json)\b/;
 }
 
 1;

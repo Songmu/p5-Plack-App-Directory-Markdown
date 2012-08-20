@@ -16,7 +16,7 @@ sub get_data {
         $content = decode_base64($content);
     }
     else {
-        $mime_type .= ' charset=utf-8;';
+        $mime_type .= '; charset=utf-8;';
     }
     ($content, $mime_type);
 }

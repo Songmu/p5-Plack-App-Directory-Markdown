@@ -21,4 +21,5 @@
 \.sw[po]$
 MYMETA\.
 .gitignore
+.gitkeep
 README\.pod

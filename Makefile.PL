@@ -4,6 +4,7 @@ all_from 'lib/Plack/App/Directory/Markdown.pm';
 
 requires 'Plack';
 requires 'Text::Xslate';
+requires 'Text::Markdown';
 requires 'Data::Section::Simple';
 
 tests 't/*.t';

@@ -2,21 +2,63 @@ package Plack::App::Directory::Markdown::Static;
 use strict;
 use warnings;
 
+use parent qw/Plack::Component/;
 use MIME::Base64;
 use Data::Section::Simple qw/get_data_section/;
 use Plack::MIME;
 
-sub get_data {
-    my $file = shift;
+use Plack::Util::Accessor qw(encoding);
 
-    my $content = get_data_section($file);
-    my $mime_type = Plack::MIME->mime_type($file);
+sub call {
+    my $self = shift;
+    my $env  = shift;
+
+    my $path = $env->{PATH_INFO} || '';
+    if ($path =~ /\0/) {
+        return $self->return_400;
+    }
+    $path =~ s!^/!!;
+
+    my ($data, $content_type) = $self->get_content($path);
+
+    return $self->return_404 unless $data;
+
+    return [ 200, [
+        'Content-Type'   => $content_type,
+        'Content-Length' => length($data),
+    ], [ $data ] ];
+}
+
+sub return_400 {
+    my $self = shift;
+    return [400, ['Content-Type' => 'text/plain', 'Content-Length' => 11], ['Bad Request']];
+}
+
+sub return_404 {
+    my $self = shift;
+    return [404, ['Content-Type' => 'text/plain', 'Content-Length' => 9], ['not found']];
+}
+
+sub data_section {
+    my $self = shift;
+
+    $self->{_reader} ||= Data::Section::Simple->new(ref $self);
+}
+
+sub get_content {
+    my ($self, $path) = @_;
+
+    my $content = $self->data_section->get_data_section($path);
+    return () unless defined $content;
+
+    my $mime_type = Plack::MIME->mime_type($path);
 
     if (is_binary($mime_type)) {
         $content = decode_base64($content);
     }
     else {
-        $mime_type .= '; charset=utf-8;';
+        my $encoding = $self->encoding || 'UTF-8';
+        $mime_type .= "; charset=$encoding;";
     }
     ($content, $mime_type);
 }

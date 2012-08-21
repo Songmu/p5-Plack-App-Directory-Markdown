@@ -26,6 +26,9 @@ my %test = (
         $res = $cb->(GET "/");
         like $res->content, qr/Index of \//;
 
+        $res = $cb->(GET "/_static/js/init.js");
+        like $res->content, qr/function/;
+
     SKIP: {
             skip "Filenames can't end with . on windows", 2 if $^O eq "MSWin32";
 

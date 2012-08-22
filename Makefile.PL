@@ -6,6 +6,7 @@ requires 'Plack';
 requires 'Text::Xslate';
 requires 'Text::Markdown';
 requires 'Data::Section::Simple';
+requires 'Plack::App::DataSection';
 
 tests 't/*.t';
 author_tests 'xt';

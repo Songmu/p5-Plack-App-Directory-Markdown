@@ -1,78 +1,9 @@
 package Plack::App::Directory::Markdown::Static;
 use strict;
 use warnings;
-
-use parent qw/Plack::Component/;
-use MIME::Base64;
-use Data::Section::Simple qw/get_data_section/;
-use Plack::MIME;
-
-use Plack::Util::Accessor qw(encoding);
-
-sub call {
-    my $self = shift;
-    my $env  = shift;
-
-    my $path = $env->{PATH_INFO} || '';
-    if ($path =~ /\0/) {
-        return $self->return_400;
-    }
-    $path =~ s!^/!!;
-
-    my ($data, $content_type) = $self->get_content($path);
-
-    return $self->return_404 unless $data;
-
-    return [ 200, [
-        'Content-Type'   => $content_type,
-        'Content-Length' => length($data),
-    ], [ $data ] ];
-}
-
-sub return_400 {
-    my $self = shift;
-    return [400, ['Content-Type' => 'text/plain', 'Content-Length' => 11], ['Bad Request']];
-}
-
-sub return_404 {
-    my $self = shift;
-    return [404, ['Content-Type' => 'text/plain', 'Content-Length' => 9], ['not found']];
-}
-
-sub data_section {
-    my $self = shift;
-
-    $self->{_reader} ||= Data::Section::Simple->new(ref $self);
-}
-
-sub get_content {
-    my ($self, $path) = @_;
-
-    my $content = $self->data_section->get_data_section($path);
-    return () unless defined $content;
-
-    my $mime_type = Plack::MIME->mime_type($path);
-
-    if (is_binary($mime_type)) {
-        $content = decode_base64($content);
-    }
-    else {
-        my $encoding = $self->encoding || 'UTF-8';
-        $mime_type .= "; charset=$encoding;";
-    }
-    ($content, $mime_type);
-}
-
-sub is_binary {
-    my $mime_type = shift;
-
-    $mime_type !~ /\b(?:text|xml|javascript|json)\b/;
-}
-
+use parent 'Plack::App::DataSection';
 1;
 __DATA__
-
-
 @@ css/bootstrap-responsive.min.css
 /*!
  * Bootstrap Responsive v2.0.4
@@ -662,3 +593,4 @@ hashComments:3,cStyleComments:!0,multilineStrings:!0,tripleQuotedStrings:!0,rege
 !k){b=n;for(var o=void 0,c=b.firstChild;c;c=c.nextSibling)var i=c.nodeType,o=i===1?o?b:c:i===3?N.test(c.nodeValue)?b:o:o;b=(f=o===b?void 0:o)&&"CODE"===f.tagName}b&&(k=f.className.match(g));k&&(k=k[1]);b=!1;for(o=n.parentNode;o;o=o.parentNode)if((o.tagName==="pre"||o.tagName==="code"||o.tagName==="xmp")&&o.className&&o.className.indexOf("prettyprint")>=0){b=!0;break}b||((b=(b=n.className.match(/\blinenums\b(?::(\d+))?/))?b[1]&&b[1].length?+b[1]:!0:!1)&&D(n,b),d={g:k,h:n,i:b},E(d))}}p<h.length?setTimeout(m,
 250):a&&a()}for(var e=[document.getElementsByTagName("pre"),document.getElementsByTagName("code"),document.getElementsByTagName("xmp")],h=[],k=0;k<e.length;++k)for(var t=0,s=e[k].length;t<s;++t)h.push(e[k][t]);var e=q,l=Date;l.now||(l={now:function(){return+new Date}});var p=0,d,g=/\blang(?:uage)?-([\w.]+)(?!\S)/;m()};window.PR={createSimpleLexer:x,registerLangHandler:k,sourceDecorator:u,PR_ATTRIB_NAME:"atn",PR_ATTRIB_VALUE:"atv",PR_COMMENT:"com",PR_DECLARATION:"dec",PR_KEYWORD:"kwd",PR_LITERAL:"lit",
 PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING:"str",PR_TAG:"tag",PR_TYPE:"typ"}})();
+

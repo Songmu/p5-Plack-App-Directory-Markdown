@@ -1,4 +1,9 @@
 Revision history for Perl extension Plack::App::Directory::Markdown
 
+0.02    Thu Aug 23 16:37:00 2012
+        - add command script pad-markdown.pl
+        - depend on Plack::App::DataSection
+        - update Bootstrap to 2.1.0
+
 0.01    Fri Aug 17 15:09:00 2012
         - original version

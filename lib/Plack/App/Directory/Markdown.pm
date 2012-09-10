@@ -163,7 +163,7 @@ __DATA__
 <html>
 <head>
 <meta charset="utf-8">
-<title>MarkdownUp</title>
+<title><: $title :></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap.min.css" />
 <style type="text/css">
@@ -190,7 +190,7 @@ __DATA__
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </a>
-      <a class="brand" href="/">Makdown</a>
+      <a class="brand" href="/"><: $title :></a>
       <div class="nav-collapse">
         <ul class="nav">
           <li class="active"><a href="/">Home</a></li>
@@ -238,10 +238,11 @@ Plack::App::Directory::Markdown - Serve translated HTML from markdown files from
 
   # app.psgi
   use Plack::App::Directory::Markdown;
-  my $app = Plack::App::Dirctory->new->to_app;
+  my $app = Plack::App::Dirctory::Markdown->new->to_app;
 
-  # app.psgi
-  my $app = Plack::App::Dirctory->new({
+  # app.psgi(with options)
+  use Plack::App::Directory::Markdown;
+  my $app = Plack::App::Dirctory::Markdown->new({
     root           => '/path/to/markdown_files',
     title          => 'page title',
     tx_path        => '/path/to/xslate_templates',

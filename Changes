@@ -1,5 +1,8 @@
 Revision history for Perl extension Plack::App::Directory::Markdown
 
+0.04    Mon Sep 10 15:06:00 2012
+        - fix SYNOPSIS
+
 0.03    Sun Sep 09 15:34:00 2012
         - fix Usage of pad-markdown.pl
         - use Plack::Runner in pad-markdown.pl

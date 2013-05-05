@@ -1,8 +1,6 @@
-cover_db
 META.yml
 Makefile
 blib
-inc
 pm_to_blib
 MANIFEST
 Makefile.old
@@ -12,3 +10,10 @@ MANIFEST.bak
 tmp/
 MYMETA.yml
 MYMETA.json
+/Plack-App-Directory-Markdown-*
+/.build
+/_build_params
+/Build
+!Build/
+!META.json
+!LICENSE

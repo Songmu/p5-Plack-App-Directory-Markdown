@@ -6,7 +6,7 @@ use HTTP::Response;
 use Plack::Test;
 use Plack::App::Directory::Markdown;
 
-my $handler = Plack::App::Directory::Markdown->new({ root => 'share' });
+my $handler = Plack::App::Directory::Markdown->new({ root => 't/share' });
 
 my %test = (
     client => sub {
@@ -32,8 +32,8 @@ my %test = (
     SKIP: {
             skip "Filenames can't end with . on windows", 2 if $^O eq "MSWin32";
 
-            mkdir "share/stuff..", 0777;
-            open my $out, ">", "share/stuff../Hello.md" or die $!;
+            mkdir "t/share/stuff..", 0777;
+            open my $out, ">", "t/share/stuff../Hello.md" or die $!;
             print $out "# Hello\n";
             close $out;
 
@@ -41,8 +41,8 @@ my %test = (
             is $res->code, 200;
             like $res->content, qr!<h1>Hello</h1>!;
 
-            unlink "share/stuff../Hello.md";
-            rmdir "share/stuff..";
+            unlink "t/share/stuff../Hello.md";
+            rmdir "t/share/stuff..";
         }
     },
     app => $handler,

@@ -23,8 +23,9 @@ my %args = (
         'Module::Build' => 0.38,
     },
 
-    name        => 'Plack-App-Directory-Markdown',
-    module_name => 'Plack::App::Directory::Markdown',
+    name            => 'Plack-App-Directory-Markdown',
+    module_name     => 'Plack::App::Directory::Markdown',
+    allow_pureperl => 0,
 
     script_files => [glob('script/*'), glob('bin/*')],
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!perl
 use strict;
 use warnings;
 use utf8;
@@ -38,8 +38,7 @@ GetOptions(\my %options, qw/
 
 my $app = Plack::App::Directory::Markdown->new(%options)->to_app;
 
-push @ARGV, '--port=9119' unless grep {/^(?:--port|-p)\b/} @ARGV;
+push @ARGV, '--port=9119' unless grep {/^(?:--?p(?:o|or|ort)?)\b/} @ARGV;
 my $runner = Plack::Runner->new;
 $runner->parse_options(@ARGV);
 $runner->run($app);
-

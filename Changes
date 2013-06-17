@@ -2,6 +2,10 @@ Revision history for Perl extension Plack::App::Directory::Markdown
 
 {{$NEXT}}
 
+0.06 2013-06-17T11:32:02Z
+        - Fixup dependencies
+        - some fix in pad-markdown.pl
+
 0.05 2013-05-05T17:41:57Z
         - Switch to Minilla
 

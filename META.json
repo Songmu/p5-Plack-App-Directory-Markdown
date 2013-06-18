@@ -49,6 +49,7 @@
             "HTTP::Date" : "0",
             "Plack::App::DataSection" : "0",
             "Plack::App::Directory" : "0",
+            "Text::Markdown" : "0",
             "Text::Xslate" : "0",
             "URI" : "0",
             "parent" : "0"
@@ -58,7 +59,7 @@
          "requires" : {
             "HTTP::Message" : "0",
             "Plack::Test" : "0",
-            "Test::More" : "0"
+            "Test::More" : "0.98"
          }
       }
    },
@@ -74,5 +75,8 @@
          "web" : "https://github.com/Songmu/p5-Plack-App-Directory-Markdown"
       }
    },
-   "version" : "0.06"
+   "version" : "0.07",
+   "x_contributors" : [
+      "Karen Etheridge <ether@cpan.org>"
+   ]
 }

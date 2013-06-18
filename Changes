@@ -2,6 +2,10 @@ Revision history for Perl extension Plack::App::Directory::Markdown
 
 {{$NEXT}}
 
+0.07 2013-06-18T02:32:10Z
+        - spelling fixes in synopsis (karenetheridge++)
+        - add dependency Text::Markdown
+
 0.06 2013-06-17T11:32:02Z
         - Fixup dependencies
         - some fix in pad-markdown.pl

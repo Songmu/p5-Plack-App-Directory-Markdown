@@ -26,6 +26,7 @@ sub new {
                 ($self->tx_path || ()),
                 Data::Section::Simple->new->get_data_section,
             ],
+            function => { process_path => \&process_path, }
         )
     );
     $self;
@@ -120,7 +121,8 @@ sub serve_path {
         push @files, { link => $url, name => $basename, mtime => HTTP::Date::time2str($stat[9]) };
     }
 
-    my $path  = Plack::Util::encode_html("Index of $env->{PATH_INFO}");
+    my $path = Plack::Util::encode_html( $env->{PATH_INFO} );
+    $path =~ s{^/}{};
     my $page  = $self->tx->render('index.tx', {
         title   => ($self->title || 'Markdown'),
         files => \@files,
@@ -152,6 +154,25 @@ sub remove_root_path {
     $path =~ s!^$root!!;
 
     $path;
+}
+
+sub process_path {
+    my $path = shift;
+
+    my @out;
+    my $i = 0;
+    foreach my $part (reverse(split('/',$path))) {
+        my $link = '../' x $i;
+
+        push @out,
+            {
+            name => $part,
+            link => "${link}",
+            };
+        $i++;
+    }
+    $out[0]->{link} = '';    # Last element should link to itself
+    return [ reverse @out ];
 }
 
 1;
@@ -213,7 +234,11 @@ __DATA__
 @@ index.tx
 : cascade base;
 : override body -> {
-<h1><: $path :></h1>
+<h1>Index of
+: for process_path($path) -> $part {
+/ <a href="<: $part.link :>"><: $part.name :></a>
+: }
+</h1>
 <ul>
 :   for $files -> $file {
 <li><a href="<: $file.link :>"><: $file.name :></a></li>
@@ -224,7 +249,11 @@ __DATA__
 @@ md.tx
 : cascade base;
 : override body -> {
-<h1><: $path :></h1>
+<h1>
+: for process_path($path) -> $part {
+/ <a href="<: $part.link :>"><: $part.name :></a>
+: }
+</h1>
 : $content | mark_raw
 : } # endblock body
 

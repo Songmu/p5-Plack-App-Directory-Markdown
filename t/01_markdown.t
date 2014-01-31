@@ -24,7 +24,7 @@ my %test = (
         is $res->code, 400;
 
         $res = $cb->(GET "/");
-        like $res->content, qr/Index of \//;
+        like $res->content, qr/Index of\s+\//;
 
         $res = $cb->(GET "/_static/js/init.js");
         like $res->content, qr/function/;

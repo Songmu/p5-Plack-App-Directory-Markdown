@@ -2,6 +2,10 @@ Revision history for Perl extension Plack::App::Directory::Markdown
 
 {{$NEXT}}
 
+0.08 2015-01-11T11:26:39Z
+        - depends on Plack::Middleware::Bootstrap
+        - change designs
+
 0.07 2013-06-18T02:32:10Z
         - spelling fixes in synopsis (karenetheridge++)
         - add dependency Text::Markdown

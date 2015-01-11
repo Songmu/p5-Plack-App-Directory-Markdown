@@ -40,8 +40,6 @@ This is a PSGI application for documentation with markdown.
     Specify Markdown module. 'Text::Markdown' as default.
     The module should have 'markdown' sub routine exportable.
 
-
-
 # AUTHOR
 
 Masayuki Matsuki <y.songmu@gmail.com>

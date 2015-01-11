@@ -5,12 +5,12 @@ use utf8;
 our $VERSION = '0.07';
 
 use parent 'Plack::App::Directory';
-use Plack::App::Directory::Markdown::Static;
 use Encode qw/encode_utf8/;
 use Data::Section::Simple;
 use Text::Xslate;
 use HTTP::Date;
 use URI::Escape qw/uri_escape/;
+use Plack::Middleware::Bootstrap;
 use Plack::Builder;
 
 use Plack::Util::Accessor;
@@ -35,11 +35,10 @@ sub to_app {
     my $self = shift;
 
     my $app = $self->SUPER::to_app;
-    my $static_app = Plack::App::Directory::Markdown::Static->new->to_app;
 
     builder {
-        mount '/_static' => $static_app,
-        mount '/'        => $app,
+        enable 'Bootstrap';
+        $app;
     };
 }
 
@@ -77,7 +76,6 @@ sub serve_path {
             my @stat = stat $dir;
             return [ 200, [
                 'Content-Type'   => 'text/html; charset=utf-8',
-                'Content-Length' => length($page),
                 'Last-Modified'  => HTTP::Date::time2str( $stat[9] ),
             ], [ $page ] ];
         }
@@ -159,56 +157,36 @@ sub remove_root_path {
 __DATA__
 
 @@ base.tx
-<!DOCTYPE html>
-<html>
 <head>
 <meta charset="utf-8">
 <title><: $title :></title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap.min.css" />
-<style type="text/css">
-  body {
-    padding-top: 60px;
-  }
-</style>
-<link rel="stylesheet" type="text/css" media="all" href="/_static/css/bootstrap-responsive.min.css" />
-<link rel="stylesheet" type="text/css" media="all" href="/_static/css/prettify.css" />
+<!-- you can locate your style.css and adjust styles -->
 <link rel="stylesheet" type="text/css" media="all" href="/style.css" />
-
-<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-<!--[if lt IE 9]>
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-<![endif]-->
-
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav-menu-1">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </a>
-      <a class="brand" href="/"><: $title :></a>
-      <div class="nav-collapse">
-        <ul class="nav">
-          <li class="active"><a href="/">Home</a></li>
-        </ul>
-      </div><!--/.nav-collapse -->
+      </button>
+      <a class="navbar-brand" href="/"><: $title :></a>
+    </div>
+    <div class="collapse navbar-collapse" id="nav-menu-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/">Home</a></li>
+      </ul>
     </div>
   </div>
-</div>
-
-<div class="container">
+</nav>
 <: block body -> { :>default body<: } :>
-</div>
-<script type="text/javascript" src="/_static/js/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="/_static/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/_static/js/prettify.js"></script>
-<script type="text/javascript" src="/_static/js/init.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<script>$(function(){$('pre > code').addClass('prettyprint');});</script>
 </body>
-</html>
 
 @@ index.tx
 : cascade base;

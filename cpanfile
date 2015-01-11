@@ -1,8 +1,7 @@
 requires 'Data::Section::Simple';
-requires 'FindBin::libs';
 requires 'HTTP::Date';
-requires 'Plack::App::DataSection';
 requires 'Plack::App::Directory';
+requires 'Plack::Middleware::Bootstrap';
 requires 'Text::Markdown';
 requires 'Text::Xslate';
 requires 'URI';

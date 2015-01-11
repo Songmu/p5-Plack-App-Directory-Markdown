@@ -2,6 +2,9 @@ Revision history for Perl extension Plack::App::Directory::Markdown
 
 {{$NEXT}}
 
+0.09 2015-01-11T16:13:16Z
+        - Make the displayed path clickable so it can be used as navigation (ranguard)
+
 0.08 2015-01-11T11:26:39Z
         - depends on Plack::Middleware::Bootstrap
         - change designs

@@ -16,6 +16,27 @@ use Plack::Builder;
 use Plack::Util::Accessor;
 Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(title tx tx_path markdown_class markdown_ext));
 
+use Getopt::Long qw/GetOptions :config auto_help pass_through/;
+use Pod::Usage;
+
+sub parse_options {
+    my $cls = shift;
+    local @ARGV = @_;
+    my $parser = Getopt::Long::Parser->new(
+        config => [qw(auto_help pass_through)]
+    );
+    $parser->getoptions(\my %opts, qw/
+        root=s
+        encoding=s
+        title=s
+        tx_path=s
+        markdown_class=s
+        markdown_ext=s
+    /) or pod2usage(2);
+
+    return (\%opts, \@ARGV);
+}
+
 sub new {
     my $cls = shift;
 

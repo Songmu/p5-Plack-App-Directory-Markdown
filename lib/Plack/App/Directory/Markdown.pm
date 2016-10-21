@@ -285,6 +285,19 @@ Text::Xslate's template directory. You can override default template with 'index
 Specify Markdown module. 'Text::Markdown' as default.
 The module should have 'markdown' sub routine exportable.
 
+=item callback
+
+Code reference for filtering HTML.
+
+  my $app = Plack::App::Directory::Markdown->new({
+    root     => '/path/to/markdown_files',
+    callback => sub {
+        my ($content_ref, $env, $dir) = @_;
+
+        ${$content_ref} =~ s!foo!bar!g;
+    },
+  })->to_app;
+
 =back
 
 

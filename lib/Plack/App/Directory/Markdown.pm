@@ -2,7 +2,7 @@ package Plack::App::Directory::Markdown;
 use strict;
 use warnings;
 use utf8;
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use parent 'Plack::App::Directory';
 use Encode qw/encode_utf8/;

@@ -2,6 +2,10 @@ Revision history for Perl extension Plack::App::Directory::Markdown
 
 {{$NEXT}}
 
+0.10 2017-03-27T13:23:12Z
+        - update script files
+        - add callback option (bayashi++)
+
 0.09 2015-01-11T16:13:16Z
         - Make the displayed path clickable so it can be used as navigation (ranguard)
 

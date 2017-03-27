@@ -77,7 +77,7 @@
          "web" : "https://github.com/Songmu/p5-Plack-App-Directory-Markdown"
       }
    },
-   "version" : "0.09",
+   "version" : "0.10",
    "x_authority" : "cpan:SONGMU",
    "x_contributors" : [
       "Karen Etheridge <ether@cpan.org>",

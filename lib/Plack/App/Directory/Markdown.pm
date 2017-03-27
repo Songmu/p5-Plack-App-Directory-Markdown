@@ -14,7 +14,7 @@ use Plack::Middleware::Bootstrap;
 use Plack::Builder;
 
 use Plack::Util::Accessor;
-Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(title tx tx_path markdown_class markdown_ext));
+Plack::Util::Accessor::mk_accessors(__PACKAGE__, qw(title tx tx_path markdown_class markdown_ext callback));
 
 sub new {
     my $cls = shift;
@@ -63,6 +63,10 @@ sub serve_path {
         if ($self->is_markdown($dir)) {
             my $content = do {local $/;open my $fh,'<:encoding(UTF-8)',$dir or die $!;<$fh>};
             $content = $self->markdown($content);
+
+            if ($self->callback) {
+                $self->callback->(\$content, $env, $dir);
+            }
 
             my $path = $self->remove_root_path($dir);
             $path =~ s/\.(?:markdown|mk?dn?)$//;
@@ -283,6 +287,19 @@ Text::Xslate's template directory. You can override default template with 'index
 
 Specify Markdown module. 'Text::Markdown' as default.
 The module should have 'markdown' sub routine exportable.
+
+=item callback
+
+Code reference for filtering HTML.
+
+  my $app = Plack::App::Directory::Markdown->new({
+    root     => '/path/to/markdown_files',
+    callback => sub {
+        my ($content_ref, $env, $dir) = @_;
+
+        ${$content_ref} =~ s!foo!bar!g;
+    },
+  })->to_app;
 
 =back
 

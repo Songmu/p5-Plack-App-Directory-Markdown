@@ -40,6 +40,19 @@ This is a PSGI application for documentation with markdown.
     Specify Markdown module. 'Text::Markdown' as default.
     The module should have 'markdown' sub routine exportable.
 
+- callback
+
+    Code reference for filtering HTML.
+
+        my $app = Plack::App::Directory::Markdown->new({
+          root     => '/path/to/markdown_files',
+          callback => sub {
+              my ($content_ref, $env, $dir) = @_;
+
+              ${$content_ref} =~ s!foo!bar!g;
+          },
+        })->to_app;
+
 # AUTHOR
 
 Masayuki Matsuki <y.songmu@gmail.com>

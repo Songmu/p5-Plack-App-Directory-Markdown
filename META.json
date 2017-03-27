@@ -4,7 +4,7 @@
       "Masayuki Matsuki <y.songmu@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.3.0, CPAN::Meta::Converter version 2.142060",
+   "generated_by" : "Minilla/v3.0.10, CPAN::Meta::Converter version 2.150005",
    "license" : [
       "perl_5"
    ],
@@ -30,7 +30,8 @@
          "requires" : {
             "CPAN::Meta" : "0",
             "CPAN::Meta::Prereqs" : "0",
-            "Module::Build" : "0.38",
+            "Module::Build" : "0",
+            "Module::Build::Tiny" : "0.035",
             "perl" : "5.008_001"
          }
       },
@@ -77,8 +78,11 @@
       }
    },
    "version" : "0.09",
+   "x_authority" : "cpan:SONGMU",
    "x_contributors" : [
       "Karen Etheridge <ether@cpan.org>",
-      "Leo Lapworth <leo@cuckoo.org>"
-   ]
+      "Leo Lapworth <leo@cuckoo.org>",
+      "bayashi <bayashi@cpan.org>"
+   ],
+   "x_serialization_backend" : "JSON::PP version 2.27300"
 }

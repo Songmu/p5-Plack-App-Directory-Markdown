@@ -181,6 +181,9 @@ __DATA__
 <head>
 <meta charset="utf-8">
 <title><: $title :></title>
+<style type="text/css">
+  img { max-width: 100%; }
+</style>
 <!-- you can locate your style.css and adjust styles -->
 <link rel="stylesheet" type="text/css" media="all" href="/style.css" />
 </head>
@@ -204,8 +207,8 @@ __DATA__
   </div>
 </nav>
 <: block body -> { :>default body<: } :>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 <script>$(function(){$('pre > code').addClass('prettyprint');});</script>
 </body>
 

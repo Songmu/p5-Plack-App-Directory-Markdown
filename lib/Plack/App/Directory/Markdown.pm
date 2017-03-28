@@ -80,6 +80,23 @@ sub _md_files {
     };
 }
 
+sub _search_prev_and_next {
+    my ($self, $file) = @_;
+    my ($prev, $next);
+
+    my @md_files = @{ $self->_md_files };
+    my $found;
+    while (defined (my $f = shift @md_files) ) {
+        if ($file eq $f) {
+            $found = 1;
+            $next = shift @md_files;
+            last;
+        }
+        $prev = $f;
+    }
+    $found ? ($prev, $next) : ();
+}
+
 sub serve_path {
     my($self, $env, $dir) = @_;
 
@@ -95,10 +112,13 @@ sub serve_path {
             my $path = $self->remove_root_path($dir);
             $path =~ s/\.(?:markdown|mk?dn?)$//;
 
+            my ($prev, $next) = $self->_search_prev_and_next($self->remove_root_path($dir));
             my $page = $self->tx->render('md.tx', {
                 path    => $path,
                 title   => ($self->title || 'Markdown'),
                 content => $content,
+                prev    => $prev,
+                next    => $next,
             });
             $page = encode_utf8($page);
 
@@ -211,6 +231,11 @@ __DATA__
 <title><: $title :></title>
 <style type="text/css">
   img { max-width: 100%; }
+  ul.paginate { padding: 0; }
+  ul.paginate li { display: inline; }
+  ul.paginate li.prev::before { content: "\00ab  "; // laquo; }
+  ul.paginate li.next::after { content: "  \00bb"; // raquo; }
+  ul.paginate li + li::before { content: ' | '; }
 </style>
 <!-- you can locate your style.css and adjust styles -->
 <link rel="stylesheet" type="text/css" media="all" href="/style.css" />
@@ -263,8 +288,21 @@ __DATA__
 / <a href="<: $part.link :>"><: $part.name :></a>
 : }
 </h1>
+: include paginate
 : $content | mark_raw
+: include paginate
 : } # endblock body
+
+@@ paginate.tx
+<nav>
+  <ul class="paginate">
+: if $prev {
+    <li class="prev"><a href="/<: $prev :>"><: $prev :></a></li>
+: }
+: if $next {
+    <li class="next"><a href="/<: $next :>"><: $next :></a></li>
+: }
+  </ul>
 
 __END__
 

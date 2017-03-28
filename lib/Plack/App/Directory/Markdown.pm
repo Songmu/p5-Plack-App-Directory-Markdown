@@ -10,7 +10,7 @@ use Data::Section::Simple;
 use Text::Xslate;
 use HTTP::Date;
 use URI::Escape qw/uri_escape/;
-use Path::Tiny qw/path/;
+use Path::Iterator::Rule;
 use Plack::Middleware::Bootstrap;
 use Plack::Builder;
 
@@ -68,11 +68,14 @@ sub _md_files {
     my $self = shift;
     $self->{_md_files} ||= do {
         my @files;
-        path($self->root // '.')->visit(sub {
-            my ($path, $state) = @_;
-            push @files, $self->remove_root_path($path.q())
-                if -f -r $path && $self->is_markdown($path.q());
-        }, {recurse => 1});
+        my $rule = Path::Iterator::Rule->new;
+        my $iter = $rule->iter($self->root // '.', {
+            depthfirst => 1,
+        });
+        while ( defined ( my $file = $iter->() ) ) {
+            push @files, $self->remove_root_path($file)
+                if -f -r $file && $self->is_markdown($file);
+        }
         \@files;
     };
 }

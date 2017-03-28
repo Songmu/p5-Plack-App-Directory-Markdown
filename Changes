@@ -2,6 +2,9 @@ Revision history for Perl extension Plack::App::Directory::Markdown
 
 {{$NEXT}}
 
+0.11 2017-03-28T10:07:55Z
+        - support prev and next pagination
+
 0.10 2017-03-27T13:23:12Z
         - update script files
         - add callback option (bayashi++)

@@ -1,5 +1,6 @@
 requires 'Data::Section::Simple';
 requires 'HTTP::Date';
+requires 'Path::Tiny';
 requires 'Plack::App::Directory';
 requires 'Plack::Middleware::Bootstrap';
 requires 'Text::Markdown';
